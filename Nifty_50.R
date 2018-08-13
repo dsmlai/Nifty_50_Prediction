@@ -7,7 +7,7 @@ head(data)
 
 data_df <- as.data.frame(data)
 
-write.csv(data_df, "/home/abhishek/Documents/DataScience/Projects/Nifty_50_Prediction/Nifty50_aug_july.csv")
+write.csv(data_df, "/home/abhishek/Documents/DataScience/Projects/Nifty_50_Prediction/Data Sets/Nifty50_aug_july.csv")
 
 #After writing this data to csv, i'll prefer csv for further operations instead of Quandl
 getwd()
@@ -46,4 +46,8 @@ shapiro.test(nifty50$Close) #p<0.05 Accept H1: Not Normally Distributed
 shapiro.test(nifty50$diff_today_prev) #p<0.05 Accept H1: Not Normally Distributed
 shapiro.test(nifty50$ln_rate_of_int) #p>0.05 Accept H0:Normally Distributed
 #test
+
+#updating csv file
+write.csv(nifty50, "/home/abhishek/Documents/DataScience/Projects/Nifty_50_Prediction/Data Sets/Nifty50_aug_july.csv")
+
 
