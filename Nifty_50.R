@@ -30,10 +30,5 @@ shapiro.test(data_df$High)  #p>0.05 Accept H0:Normally Distributed
 shapiro.test(data_df$Low)   #p>0.05 Accept H0:Normally Distributed
 shapiro.test(data_df$Close) #p>0.05 Accept H0:Normally Distributed
 shapiro.test(data_df$`Rate of Interest`) #p>0.05 Accept H0:Normally Distributed
-
-c<- data_df$Open
-c<-sort(c, decreasing = F)
-shapiro.test(c) #p>0.05 Accept H0:Normally Distributed
-
 #test
 
