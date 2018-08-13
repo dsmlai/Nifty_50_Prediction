@@ -24,7 +24,6 @@ for(i in 1:length(data_df$Close)){
 colnames(data_df)[8] <- "Rate of Interest"
 
 nrow(data_df)
-
 #test of Data Normallity
 shapiro.test(data_df$Open)  #p>0.05 Accept H0:Normally Distributed
 shapiro.test(data_df$High)  #p>0.05 Accept H0:Normally Distributed
