@@ -15,16 +15,220 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
-summary(cars)
+```{r}
+install.packages("quantmod")
+library(quantmod)
+
+#"^NSEI" #NIFTY50  INDIA
+#"^GSPC" #S&P500  United States
+#"^IXIC" #NASDAQ  United States
+#"^N225" #NIKKEI 225 -JAPAN
+#"^HSI"  #HANGSENG -HONG KONG
+#"^FTSE" #Financial Times SE -LONDON 
+#"INR=X" #USD/INR
+#"BR"   #CRUD OIL : To be Confirmed
+#"GLD"  #GOLD   : In which currency value is defined, we have to check
+#"SLV"  #SILVER : In which currency value is defined, we have to check
+startDate<-"2017-08-01" 
+endDate<-"2018-07-31"
+getSymbols(c("^NSEI","^GSPC","^IXIC","^N225","^HSI","^FTSE","INR=X","GBPINR=X","JPYINR=X",from=startDate,to=endDate))
+
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
 
 ```{r pressure, echo=FALSE}
-plot(pressure)
+library(Quandl)
+
+Quandl.api_key("KMKRiKFsPNez6Xg-LUby") 
+
+
+
+##CRUDEOIL
+
+# CL=crude oil and G,Q,U are month code of Quandl . Data is available in different date brackets.
+quandldata1<-Quandl("MCX/CLG2018",type = "xts", start_date= "04-09-2017", end_date="16-02-2018", force_irregular = TRUE)
+CCdata1 <- as.data.frame(quandldata1)
+
+quandldata2<-Quandl("MCX/CLQ2018",type = "xts", start_date= "19-02-2018", end_date="20-08-2018", force_irregular = TRUE)
+CCdata2 <- as.data.frame(quandldata2)
+
+quandldata3<-Quandl("MCX/CLU2018",type = "xts", start_date= "21-08-2018", end_date="31-08-2018", force_irregular = TRUE)
+CCdata3 <- as.data.frame(quandldata3)
+
+#crudeoil <-  rbind(CCdata1, CCdata2, CCdata3)
+crudeoil <-  rbind(quandldata1, quandldata2, quandldata3)
+sum(is.na(crudeoil))
+length(crudeoil$Close)
+
+##GOLD
+
+# GC=gold and G,Q,Z are month code of Quandl 
+
+quandldata1<-Quandl("MCX/GCG2018",type = "xts", start_date= "04-09-2017", end_date="16-02-2018", force_irregular = TRUE)
+CCdata1 <- as.data.frame(quandldata1)
+
+quandldata2<-Quandl("MCX/GCQ2018",type = "xts", start_date= "19-02-2018", end_date="20-08-2018", force_irregular = TRUE)
+CCdata2 <- as.data.frame(quandldata2)
+
+quandldata3<-Quandl("MCX/GCZ2018",type = "xts", start_date= "21-08-2018", end_date="31-08-2018", force_irregular = TRUE)
+CCdata3 <- as.data.frame(quandldata3)
+
+#GOLD <- rbind(CCdata1, CCdata2, CCdata3)
+GOLD <- rbind(quandldata1, quandldata2, quandldata3)
+
+sum(is.na(GOLD))
+length(GOLD$Close)
+
+head(GOLD)
+
+##SILVER
+
+# SI=silver and H and U are month code of Quandl 
+
+quandldata1<-Quandl("MCX/SIH2018",type = "xts", start_date= "04-09-2017", end_date="05-03-2018", force_irregular = TRUE)
+CCdata1 <- as.data.frame(quandldata1$Close)
+quandldata2<-Quandl("MCX/SIU2018",type = "xts", start_date= "06-03-2018", end_date="31-08-2018", force_irregular = TRUE)
+CCdata2 <- as.data.frame(quandldata2$Close)
+
+
+#SILVER <- rbind(CCdata1, CCdata2)
+SILVER <- rbind(quandldata1, quandldata2)
+sum(is.na(SILVER))
+length(SILVER$Close)
+
+head(NSEI)
+head(crudeoil) 
+crudeoil$Open
+
+crudeoil$CrudeOil.Open = crudeoil[,colnames(crudeoil)=="Open"]
+crudeoil$CrudeOil.Close = crudeoil[,colnames(crudeoil)=="Close"]
+crudeoil$CrudeOil.Low = crudeoil[,colnames(crudeoil)=="Low"]
+crudeoil$CrudeOil.High = crudeoil[,colnames(crudeoil)=="High"]
+crudeoil$CrudeOil.Volume = crudeoil[,colnames(crudeoil)=="Volume"]
+crudeoil$CrudeOil.Adjusted = crudeoil[,colnames(crudeoil)=="Open.Interest"]
+
+crudeoil$Open <- NULL
+crudeoil$High <- NULL
+crudeoil$Low <- NULL
+crudeoil$Close <- NULL
+crudeoil$Volume <- NULL
+crudeoil$Open.Interest <- NULL
+
+head(GOLD)
+
+GOLD$GOLD.Open = GOLD[,colnames(GOLD)=="Open"]
+GOLD$GOLD.Close = GOLD[,colnames(GOLD)=="Close"]
+GOLD$GOLD.Low = GOLD[,colnames(GOLD)=="Low"]
+GOLD$GOLD.High = GOLD[,colnames(GOLD)=="High"]
+GOLD$GOLD.Volume = GOLD[,colnames(GOLD)=="Volume"]
+GOLD$GOLD.Adjusted = GOLD[,colnames(GOLD)=="Open.Interest"]
+
+GOLD$Open <- NULL
+GOLD$High <- NULL
+GOLD$Low <- NULL
+GOLD$Close <- NULL
+GOLD$Volume <- NULL
+GOLD$Open.Interest <- NULL
+
+SILVER$SILVER.Open     = SILVER[,colnames(SILVER)=="Open"]
+SILVER$SILVER.Close    = SILVER[,colnames(SILVER)=="Close"]
+SILVER$SILVER.Low      = SILVER[,colnames(SILVER)=="Low"]
+SILVER$SILVER.High     = SILVER[,colnames(SILVER)=="High"]
+SILVER$SILVER.Volume   = SILVER[,colnames(SILVER)=="Volume"]
+SILVER$SILVER.Adjusted = SILVER[,colnames(SILVER)=="Open.Interest"]
+
+SILVER$Open <- NULL
+SILVER$High <- NULL
+SILVER$Low <- NULL
+SILVER$Close <- NULL
+SILVER$Volume <- NULL
+SILVER$Open.Interest <- NULL
+
+head(SILVER)
+
 ```
 
 Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+x1<-merge(NSEI,GSPC,join="left")
+x2<-merge(x1,IXIC,join="left")
+x3<-merge(x2,N225,join="left")
+x4<-merge(x3,HSI,join="left")
+x5<-merge(x4,FTSE,join="left")
+x6<-merge(x5,`INR=X`,join="left")
+x7<-merge(x6,`GBPINR=X`,join="left")
+x8<-merge(x7,`JPYINR=X`,join="left")
+x9<-merge(x8,crudeoil,join="left")
+x10<-merge(x9,GOLD,join="left")
+x11<-merge(x10,SILVER,join="left")
+
+head(x11)
+summary(x11)
+dim(x11)
+
+#Abhishek EURINR=X use this tag for Euro to INR value. I havent added that to the Master data. Since I got it after creating master data.
+```
+
+```{r}
+dim(x11[!complete.cases(x11),]) 
+x12<-na.locf(x11)
+dim(x12[!complete.cases(x12),]) 
+head(x12)
+
+MasterData<-data.frame(date=index(x12), coredata(x12))
+head(MasterData)
+n=nrow(MasterData)
+n
+```
+
+```{r}
+#MARKET INDICES DERIVATION STARTS
+# Log Return Variables:
+# Definition: log( today's close/previous close)
+# Obtain log return for
+# a) Nifty    : NSEI
+# b) NIKKEI   : N225
+# c) Hangseng  :HSI 
+# d) S&P 500  : GSPC
+# e) DAX      : IXIC
+
+MasterData$NSEI.LogPCTCReturn <- c(0,diff(log(MasterData$NSEI.Close), lag = 1))
+MasterData$N225.LogPCTCReturn <- c(0,diff(log(MasterData$N225.Close), lag = 1))
+MasterData$HSI.LogPCTCReturn <- c(0,diff(log(MasterData$HSI.Close)  , lag = 1))
+MasterData$GSPC.LogPCTCReturn <- c(0,diff(log(MasterData$GSPC.Close), lag = 1))
+MasterData$IXIC.LogPCTCReturn <- c(0,diff(log(MasterData$IXIC.Close), lag = 1))
+
+#Log Open-Close 
+#Definition: log( today's open/previous close)
+#Obtain for:
+#a) NIFTY
+#b) NIKKEI
+#c) Hangseng
+MasterData$NSEI.LogTOPCReturn < -c(0,log(MasterData$NSEI.Open[2:n])-log(MasterData$NSEI.Close[1:n-1]))
+MasterData$N225.LogTOPCReturn <- c(0,log(MasterData$NSEI.Open[2:n])-log(MasterData$NSEI.Close[1:n-1]))
+MasterData$HSI.LogTOPCReturn  <- c(0,log(MasterData$NSEI.Open[2:n])-log(MasterData$NSEI.Close[1:n-1]))
+
+#Currency Variables
+#Definition: log( today's value/previous value)
+#a) USD
+#b) EUR
+#c) GBP
+#d) YEN
+#e) CRUDE OIL
+#f) GOLD
+#g) SILVER
+
+MasterData$INR.X.LogPVTVReturn <- c(0,diff(log(MasterData$INR.X.Adjusted)       , lag = 1))
+MasterData$GBPINR.X.LogPVTVReturn <- c(0,diff(log(MasterData$GBPINR.X.Adjusted) , lag = 1))
+MasterData$JPYINR.X.LogPVTVReturn <- c(0,diff(log(MasterData$JPYINR.X.Adjusted) , lag = 1))
+sMasterData$CrudeOil.LogPVTVReturn <- c(0,diff(log(MasterData$CrudeOil.Adjusted) , lag = 1))
+MasterData$GOLD.LogPVTVReturn <- c(0,diff(log(MasterData$GOLD.Adjusted) , lag = 1))
+MasterData$SILVER.LogPVTVReturn <- c(0,diff(log(MasterData$SILVER.Adjusted) , lag = 1))
+#MARKET INDICES DERIVATION ENDS
+
+write.csv(MasterData, file = "MasterData.csv")
+
+
+
+```
+
