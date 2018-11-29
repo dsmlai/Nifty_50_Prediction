@@ -326,3 +326,56 @@ library(class)
 niftymodel_knn_model6 <- knn(knn_train, knn_test, k=7, cl=YTrain)
 table(YTest, niftymodel_knn_model6)
 
+################### MODEL 7 #######################
+install.packages("partykit")
+install.packages("CHAID", repos = "http://R-Forge.R-project.org", type = "source")
+library(CHAID)
+library(partykit)
+
+nifty_train_data$NSEI.Direction <- as.factor(nifty_train_data$NSEI.Direction)
+nifty_test_data$NSEI.Direction <- as.factor(nifty_test_data$NSEI.Direction)
+ctree<-ctree(formula=NSEI.Direction ~ NSEI.LogTOPCReturn+NSEI.LogPCTCReturn+NSEI.Low+NSEI.High+NSEI.Close+
+                         INR.X.LogPVTVReturn+GBPINR.X.LogPVTVReturn+JPYINR.X.LogPVTVReturn+CrudeOil.LogPVTVReturn+
+                         GOLD.LogPVTVReturn+SILVER.LogPVTVReturn+GSPC.LogPCTCReturn+N225.LogTOPCReturn+SGX.LogTOPCReturn,
+                       data=nifty_train_data)
+
+ctree<-partykit::ctree(formula = NSEI.Direction ~ NSEI.Low + JPYINR.X.LogPVTVReturn + 
+               SILVER.LogPVTVReturn + NSEI.LogTOPCReturn, 
+             data = nifty_train_data)
+
+plot(ctree, type="simple")
+
+predtree<-predict(ctree,nifty_test_data,type="prob")
+library(ROCR)
+pred<-prediction(predtree[,2],nifty_test_data$NSEI.Direction)
+perf<-performance(pred,"tpr","fpr")
+plot(perf)
+abline(0,1)
+## Area under ROC Curve in R (AUC)
+auc<-performance(pred,"auc")
+auc@y.values #61%
+
+################### MODEL 8 #######################
+install.packages("randomForest")
+library(randomForest)
+
+rf<-randomForest(formula = NSEI.Direction ~ NSEI.Low + JPYINR.X.LogPVTVReturn + 
+                         SILVER.LogPVTVReturn + NSEI.LogTOPCReturn, 
+                       data = nifty_train_data, mtry=2, ntree=100, 
+                       importance = T, cutoff =c(0.6,0.4))
+rf
+
+plot(rf)
+
+predict(rf, nifty_train_data)
+
+predrf <- predict(rf,nifty_test_data, type = "vote", norm.votes = TRUE)
+library(ROCR)
+pred<-prediction(predrf[,2],nifty_test_data$NSEI.Direction)
+perf<-performance(pred,"tpr","fpr")
+plot(perf)
+abline(0,1)
+## Area under ROC Curve in R (AUC)
+auc<-performance(pred,"auc")
+auc@y.values #58%
+
