@@ -378,4 +378,3 @@ abline(0,1)
 ## Area under ROC Curve in R (AUC)
 auc<-performance(pred,"auc")
 auc@y.values #58%
-
